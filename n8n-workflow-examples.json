@@ -1,0 +1,347 @@
+{
+  "workflows": [
+    {
+      "name": "Employee Login",
+      "description": "Validates employee credentials and returns employee information",
+      "nodes": [
+        {
+          "id": "webhook-trigger",
+          "type": "n8n-nodes-base.webhook",
+          "position": [240, 300],
+          "parameters": {
+            "httpMethod": "POST",
+            "path": "login",
+            "responseMode": "responseNode"
+          }
+        },
+        {
+          "id": "validate-credentials",
+          "type": "n8n-nodes-base.if",
+          "position": [460, 300],
+          "parameters": {
+            "conditions": {
+              "string": [
+                {
+                  "value1": "={{ $json.employeeId }}",
+                  "operation": "notEmpty"
+                },
+                {
+                  "value1": "={{ $json.password }}",
+                  "operation": "notEmpty"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "check-employee-db",
+          "type": "n8n-nodes-base.googleSheets",
+          "position": [680, 200],
+          "parameters": {
+            "operation": "read",
+            "sheetName": "Employees",
+            "range": "A:C",
+            "filters": {
+              "filters": [
+                {
+                  "column": "Employee ID",
+                  "condition": "equal",
+                  "value": "={{ $json.employeeId }}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "success-response",
+          "type": "n8n-nodes-base.respondToWebhook",
+          "position": [900, 200],
+          "parameters": {
+            "respondWith": "json",
+            "responseBody": {
+              "success": true,
+              "employeeName": "={{ $json[0]['Employee Name'] }}",
+              "message": "Login successful"
+            }
+          }
+        },
+        {
+          "id": "error-response",
+          "type": "n8n-nodes-base.respondToWebhook",
+          "position": [900, 400],
+          "parameters": {
+            "respondWith": "json",
+            "responseBody": {
+              "success": false,
+              "message": "Invalid credentials"
+            }
+          }
+        }
+      ],
+      "connections": {
+        "webhook-trigger": {
+          "main": [
+            [
+              {
+                "node": "validate-credentials",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "validate-credentials": {
+          "main": [
+            [
+              {
+                "node": "check-employee-db",
+                "type": "main",
+                "index": 0
+              }
+            ],
+            [
+              {
+                "node": "error-response",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "check-employee-db": {
+          "main": [
+            [
+              {
+                "node": "success-response",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "Clock In",
+      "description": "Logs clock-in events to Excel/Google Sheets",
+      "nodes": [
+        {
+          "id": "webhook-trigger",
+          "type": "n8n-nodes-base.webhook",
+          "position": [240, 300],
+          "parameters": {
+            "httpMethod": "POST",
+            "path": "clock-in",
+            "responseMode": "responseNode"
+          }
+        },
+        {
+          "id": "prepare-data",
+          "type": "n8n-nodes-base.set",
+          "position": [460, 300],
+          "parameters": {
+            "values": {
+              "string": [
+                {
+                  "name": "Employee ID",
+                  "value": "={{ $json.employeeId }}"
+                },
+                {
+                  "name": "Employee Name",
+                  "value": "={{ $json.employeeName }}"
+                },
+                {
+                  "name": "Date",
+                  "value": "={{ $json.date }}"
+                },
+                {
+                  "name": "Clock In Time",
+                  "value": "={{ $json.time }}"
+                },
+                {
+                  "name": "Timestamp",
+                  "value": "={{ $json.timestamp }}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "log-to-sheets",
+          "type": "n8n-nodes-base.googleSheets",
+          "position": [680, 300],
+          "parameters": {
+            "operation": "append",
+            "sheetName": "TimeLog",
+            "range": "A:E",
+            "options": {
+              "valueInputOption": "RAW"
+            }
+          }
+        },
+        {
+          "id": "success-response",
+          "type": "n8n-nodes-base.respondToWebhook",
+          "position": [900, 300],
+          "parameters": {
+            "respondWith": "json",
+            "responseBody": {
+              "success": true,
+              "message": "Clock in logged successfully"
+            }
+          }
+        }
+      ],
+      "connections": {
+        "webhook-trigger": {
+          "main": [
+            [
+              {
+                "node": "prepare-data",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "prepare-data": {
+          "main": [
+            [
+              {
+                "node": "log-to-sheets",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "log-to-sheets": {
+          "main": [
+            [
+              {
+                "node": "success-response",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "Clock Out",
+      "description": "Logs clock-out events and session duration to Excel/Google Sheets",
+      "nodes": [
+        {
+          "id": "webhook-trigger",
+          "type": "n8n-nodes-base.webhook",
+          "position": [240, 300],
+          "parameters": {
+            "httpMethod": "POST",
+            "path": "clock-out",
+            "responseMode": "responseNode"
+          }
+        },
+        {
+          "id": "prepare-data",
+          "type": "n8n-nodes-base.set",
+          "position": [460, 300],
+          "parameters": {
+            "values": {
+              "string": [
+                {
+                  "name": "Employee ID",
+                  "value": "={{ $json.employeeId }}"
+                },
+                {
+                  "name": "Employee Name",
+                  "value": "={{ $json.employeeName }}"
+                },
+                {
+                  "name": "Date",
+                  "value": "={{ $json.date }}"
+                },
+                {
+                  "name": "Clock Out Time",
+                  "value": "={{ $json.time }}"
+                },
+                {
+                  "name": "Session Duration",
+                  "value": "={{ $json.sessionDuration }}"
+                },
+                {
+                  "name": "Session Minutes",
+                  "value": "={{ $json.sessionDurationMinutes }}"
+                },
+                {
+                  "name": "Timestamp",
+                  "value": "={{ $json.timestamp }}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "log-to-sheets",
+          "type": "n8n-nodes-base.googleSheets",
+          "position": [680, 300],
+          "parameters": {
+            "operation": "append",
+            "sheetName": "TimeLog",
+            "range": "A:G",
+            "options": {
+              "valueInputOption": "RAW"
+            }
+          }
+        },
+        {
+          "id": "success-response",
+          "type": "n8n-nodes-base.respondToWebhook",
+          "position": [900, 300],
+          "parameters": {
+            "respondWith": "json",
+            "responseBody": {
+              "success": true,
+              "message": "Clock out logged successfully"
+            }
+          }
+        }
+      ],
+      "connections": {
+        "webhook-trigger": {
+          "main": [
+            [
+              {
+                "node": "prepare-data",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "prepare-data": {
+          "main": [
+            [
+              {
+                "node": "log-to-sheets",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "log-to-sheets": {
+          "main": [
+            [
+              {
+                "node": "success-response",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        }
+      }
+    }
+  ]
+} 

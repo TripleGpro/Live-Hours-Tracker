@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Triple G Lawncare - Employee Time Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Login Screen -->
+        <div id="loginScreen" class="screen active">
+            <div class="login-card">
+                <div class="logo">
+                    <div class="company-logo">
+                        <div class="logo-shield">
+                            <div class="logo-content">
+                                <div class="company-name">
+                                    <span class="triple">Triple</span>
+                                    <span class="g">G</span>
+                                </div>
+                                <div class="business-type">LAWNCARE</div>
+                                <div class="business-subtype">& LANDSCAPING</div>
+                                <div class="location">BRINGHURST INDIANA</div>
+                                <div class="phone">765.461.0053</div>
+                            </div>
+                            <div class="grass-element"></div>
+                        </div>
+                    </div>
+                    <h1>Employee Time Tracker</h1>
+                    <p class="company-tagline">Powered by NextGen AI LLC</p>
+                </div>
+                <form id="loginForm" class="login-form">
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <select id="employeeId" required>
+                            <option value="">Select Employee</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-key"></i>
+                        <input type="password" id="employeePin" placeholder="Enter 4-digit PIN" maxlength="4" pattern="[0-9]{4}" required>
+                    </div>
+                    <button type="submit" class="login-btn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login
+                    </button>
+                </form>
+                <div id="loginError" class="error-message"></div>
+                
+                <!-- Admin Section -->
+                <div class="admin-section">
+                    <div class="admin-divider">
+                        <span>or</span>
+                    </div>
+                    <button id="adminBtn" class="admin-btn">
+                        <i class="fas fa-cog"></i>
+                        Admin Mode
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Login Screen -->
+        <div id="adminLoginScreen" class="screen">
+            <div class="login-card">
+                <div class="logo">
+                    <div class="company-logo">
+                        <div class="logo-shield">
+                            <div class="logo-content">
+                                <div class="company-name">
+                                    <span class="triple">Triple</span>
+                                    <span class="g">G</span>
+                                </div>
+                                <div class="business-type">LAWNCARE</div>
+                                <div class="business-subtype">& LANDSCAPING</div>
+                                <div class="location">BRINGHURST INDIANA</div>
+                                <div class="phone">765.461.0053</div>
+                            </div>
+                            <div class="grass-element"></div>
+                        </div>
+                    </div>
+                    <h1>Admin Access</h1>
+                    <p class="company-tagline">Powered by NextGen AI LLC</p>
+                </div>
+                <form id="adminLoginForm" class="login-form">
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="adminPassword" placeholder="Admin Password" required>
+                    </div>
+                    <button type="submit" class="login-btn admin-login-btn">
+                        <i class="fas fa-shield-alt"></i>
+                        Access Admin
+                    </button>
+                </form>
+                <div id="adminLoginError" class="error-message"></div>
+                <button id="backToLoginBtn" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Login
+                </button>
+            </div>
+        </div>
+
+        <!-- Admin Management Screen -->
+        <div id="adminScreen" class="screen">
+            <div class="simple-card">
+                <div class="header">
+                    <h2>Employee Management</h2>
+                    <button id="adminLogoutBtn" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Exit Admin
+                    </button>
+                </div>
+
+                <!-- Add New Employee -->
+                <div class="admin-section">
+                    <h3>Add New Employee</h3>
+                    <div class="add-employee-form">
+                        <div class="input-group">
+                            <i class="fas fa-user-plus"></i>
+                            <input type="text" id="newEmployeeName" placeholder="Employee Name" maxlength="50">
+                        </div>
+                        <button id="addEmployeeBtn" class="action-btn">
+                            <i class="fas fa-plus"></i>
+                            Add Employee
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Employee List -->
+                <div class="admin-section">
+                    <h3>Current Employees</h3>
+                    <div id="employeeList" class="employee-list">
+                        <!-- Employees will be listed here -->
+                    </div>
+                    <button id="resetEmployeeListBtn" class="action-btn" style="margin-top: 16px;">
+                        <i class="fas fa-refresh"></i>
+                        Reset to Default Employee List
+                    </button>
+                </div>
+
+                <div id="adminMessage" class="message"></div>
+            </div>
+        </div>
+
+        <!-- Simple Clock In/Out Screen -->
+        <div id="timeTrackingScreen" class="screen">
+            <div class="simple-card">
+                <div class="header">
+                    <h2>Welcome, <span id="employeeName">Employee</span></h2>
+                    <button id="logoutBtn" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </button>
+                </div>
+
+                <!-- Time and Date Display -->
+                <div class="time-display">
+                    <div class="current-time">
+                        <i class="fas fa-clock"></i>
+                        <span id="currentTime">--:--:--</span>
+                    </div>
+                    <div class="current-date">
+                        <i class="fas fa-calendar"></i>
+                        <span id="currentDate">--/--/----</span>
+                    </div>
+                </div>
+
+                <!-- Usage Instructions -->
+                <div class="usage-instructions">
+                    <i class="fas fa-info-circle"></i>
+                    <p>Only log in once a day. If you need to clock out and come back, please make a note.</p>
+                </div>
+
+                <!-- Two Big Buttons -->
+                <div class="big-buttons">
+                    <button id="clockInBtn" class="big-btn clock-in-btn">
+                        <i class="fas fa-play"></i>
+                        <span>CLOCK IN</span>
+                    </button>
+                    <button id="clockOutBtn" class="big-btn clock-out-btn">
+                        <i class="fas fa-stop"></i>
+                        <span>CLOCK OUT</span>
+                    </button>
+                </div>
+
+                <div id="message" class="message"></div>
+            </div>
+        </div>
+
+        <!-- Confirmation Screen -->
+        <div id="confirmationScreen" class="screen">
+            <div class="simple-card">
+                <div class="header">
+                    <h2 id="confirmationTitle">Confirm Clock In</h2>
+                    <button id="backBtn" class="back-btn">
+                        <i class="fas fa-arrow-left"></i>
+                        Back
+                    </button>
+                </div>
+
+                <div class="confirmation-content">
+                    <div class="confirm-message">
+                        <i id="confirmIcon" class="fas fa-question-circle"></i>
+                        <h3 id="confirmText">Are you sure you want to clock in?</h3>
+                    </div>
+
+                    <div class="notes-section">
+                        <label for="notesInput">Notes (optional):</label>
+                        <textarea id="notesInput" placeholder="Enter any notes..." rows="4"></textarea>
+                    </div>
+
+                    <div class="confirm-buttons">
+                        <button id="confirmYesBtn" class="confirm-btn yes-btn">
+                            <i class="fas fa-check"></i>
+                            <span>Yes, Confirm</span>
+                        </button>
+                        <button id="confirmNoBtn" class="confirm-btn no-btn">
+                            <i class="fas fa-times"></i>
+                            <span>Cancel</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Thank You Screen -->
+        <div id="thankYouScreen" class="screen">
+            <div class="simple-card">
+                <div class="thank-you-content">
+                    <div class="thank-you-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h2>Thank You!</h2>
+                    <p id="thankYouMessage">Have a great day!</p>
+                    <div class="thank-you-buttons">
+                        <button id="continueBtn" class="continue-btn">
+                            <i class="fas fa-arrow-right"></i>
+                            <span>Continue</span>
+                        </button>
+                        <button id="logoutNowBtn" class="logout-btn" style="margin-top: 12px;">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout Now</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
