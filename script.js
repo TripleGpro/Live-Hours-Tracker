@@ -35,9 +35,9 @@ let employees = JSON.parse(localStorage.getItem('employees')) || [
     { name: 'Deron Peters', pin: '1947' },
     { name: 'John Lambert', pin: '5328' },
     { name: 'Rodolfo Ruiz', pin: '7689' },
-    { name: 'Malachi Root', pin: '4153' }
-    { name: 'Alyson Flowers', pin: '2222' }
-    { name: 'Jared Golts', pin: '1111' }
+    { name: 'Malachi Root', pin: '4153' },
+    { name: 'Alyson Flowers', pin: '2222' },
+    { name: 'Jared Golts', pin: '1111' },
 ];
 
 // DOM elements
