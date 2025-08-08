@@ -36,8 +36,8 @@ let employees = JSON.parse(localStorage.getItem('employees')) || [
     { name: 'John Lambert', pin: '5328' },
     { name: 'Rodolfo Ruiz', pin: '1234' },
     { name: 'Malachi Root', pin: '5678' },
-    { name: 'Alyson Flowers', pin: '9012' },
-    { name: 'Jared Goltz', pin: '3456' }
+    { name: 'Alyson Flowers', pin: '2377' },
+    { name: 'Jared Goltz', pin: '0053' }
 ];
 
 // DOM elements
@@ -123,8 +123,8 @@ function resetEmployeeList() {
         { name: 'John Lambert', pin: '5328' },
         { name: 'Rodolfo Ruiz', pin: '1234' },
         { name: 'Malachi Root', pin: '5678' },
-        { name: 'Alyson Flowers', pin: '9012' },
-        { name: 'Jared Goltz', pin: '3456' }
+        { name: 'Alyson Flowers', pin: '2377' },
+        { name: 'Jared Goltz', pin: '0053' }
     ];
     
     // Clear ALL localStorage data to ensure clean reset
